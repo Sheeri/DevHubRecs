@@ -1,0 +1,5 @@
+.env
+*.swp
+.DS_Store
+output/
+data/
