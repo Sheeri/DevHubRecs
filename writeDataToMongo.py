@@ -16,7 +16,7 @@ from pymongo.server_api import ServerApi
 # Load config from a .env file:
 load_dotenv()
 MONGODB_URI = os.environ['MONGODB_URI']
-GA_DATA_FILE = os.environ['GA_DATA_FILE']
+GA_DATA_FILE = os.environ['GA_DATA_FILE'] + '.csv'
 DB = os.environ['DB']
 PAGES_BY_ID = os.environ['PAGES_BY_ID']
 
@@ -25,7 +25,8 @@ this_dict = defaultdict(list)
 with open(GA_DATA_FILE, 'r+') as f:
   read_me = csv.reader(f, delimiter=",")
   for row in read_me:
-    this_dict[row[1]].append(row[0])
+    if row[0] not in this_dict[row[1]]:
+      this_dict[row[1]].append(row[0])
 
 ### save to MongoDB:
 # Connect to your MongoDB cluster:
@@ -37,6 +38,13 @@ db = client[DB]
 # collection
 pageviews = db[PAGES_BY_ID]
 
+res = pageviews.find({})
+for rec in res:
+  for page in rec['pages']:
+    if page not in this_dict[rec['_id']]:
+      this_dict[rec['_id']].append(page)
+
+
 insert_list=[]
 # Insert a document for each key:
 for key in this_dict:
@@ -45,4 +53,5 @@ for key in this_dict:
   doc['pages']=this_dict[key]
   insert_list+=[doc]
 
+pageviews.drop()
 pageviews.insert_many(insert_list, ordered=False)

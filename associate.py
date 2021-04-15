@@ -14,30 +14,25 @@ min_support=0.001
 
 # Load config from a .env file:
 load_dotenv()
-MONGODB_URI = os.environ['MONGODB_URI']
+MONGODB = os.environ['MONGODB_URI']
 DB = os.environ['DB']
 PAGES_BY_ID = os.environ['PAGES_BY_ID']
 ASSOCIATIONS = os.environ['ASSOCIATIONS']
 
 # Connect to your MongoDB cluster:
 server_api = ServerApi('1')
-client = MongoClient(MONGODB_URI,server_api=server_api)
+client = MongoClient(MONGODB,server_api=server_api)
 
 # database
 db = client[DB]
 # collection
 pageviews = db[PAGES_BY_ID]
 
-# pipeline = [ { '$unwind': { 'path': '$pages' } }, { '$match': { '_id': '1056937' } } ]
-pipeline = [ { '$unwind': { 'path': '$pages' } }, { '$addFields': { 'values': 1 } } ]
-
-## verification
-#results = pageviews.aggregate(pipeline)
-#for row in results:
-#   print("{userID} {pages}".format(
-#         userID=row["_id"],
-#         pages=row["pages"],
-#   ))
+pipeline = [ { '$unwind': { 'path': '$pages' } }, 
+             { '$project': { 'pages': { '$replaceAll': { 'input': '$pages', 'find': "'", 'replacement': '' } }, 
+                             'values': { '$literal': 1 } }
+             }
+           ]
 
 df = pd.DataFrame(list(pageviews.aggregate(pipeline)))
 # restructure dataframe via pivot_table
@@ -82,4 +77,5 @@ for index in range(len(data_dict)):
   insert_list+=[data_dict[index]]
 
 associations = db[ASSOCIATIONS]
+associations.drop()
 associations.insert_many(insert_list)
