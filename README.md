@@ -3,7 +3,7 @@
 
 Pre-work: save a TSV file downloaded from GA query explorer demo/tools
              https://ga-dev-tools.appspot.com/query-explorer/
-
+          Copy env.tmpl to .env and put in your values
 
 parseTsvToCsv.py - step 1, cleans/prepares data. input:tsv file, output: csv file with the same name
 writeDataToMongo.py - step 2, takes cleaned up csv file and imports it into the pageviews collection.

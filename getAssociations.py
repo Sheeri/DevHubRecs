@@ -1,17 +1,17 @@
-import os, csv, re
-from collections import defaultdict
+import os, re
 from dotenv import load_dotenv 
 from pymongo import MongoClient
-from pymongo.server_api import ServerApi
+#from pymongo.server_api import ServerApi
 # use with python3
 
+# probably you don't have a different source and target but skunkworks did
+# so you probably want to change this
 # Load config from a .env file:
 load_dotenv()
 SOURCE_MONGODB = os.environ['MONGODB_URI']
 SOURCE_DB = os.environ['DB']
 TARGET_MONGODB = os.environ['MONGODB_URI2']
 TARGET_DB = os.environ['DB2']
-GA_DATA_FILE = os.environ['GA_DATA_FILE']
 ASSOCIATIONS = os.environ['ASSOCIATIONS']
 RELATED = os.environ['RELATED']
 
@@ -19,9 +19,10 @@ RELATED = os.environ['RELATED']
 #TODO - make sure we get rid of ?page= in the parsing, then remove that from the match clause
 
 ### get associations from MongoDB:
-# Connect to your MongoDB cluster:
-server_api = ServerApi('1')
-client = MongoClient(SOURCE_MONGODB,server_api=server_api)
+client = MongoClient(MONGODB)
+# server_api is only needed for MongoDB version 4.9+
+#server_api = ServerApi('1')
+#client = MongoClient(MONGODB,server_api=server_api)
 
 # database
 db = client[SOURCE_DB]
@@ -59,7 +60,7 @@ client = MongoClient(TARGET_MONGODB)
 # database
 db = client[TARGET_DB]
 # collection
-related = db['skunkworks2']
+related = db[RELATED]
 
 related.drop()
 related.insert_many(insert_list)

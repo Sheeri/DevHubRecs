@@ -1,4 +1,4 @@
-import os, re, csv
+import os, re
 from dotenv import load_dotenv 
 import pandas as pd
 
@@ -8,10 +8,7 @@ import pandas as pd
 
 # Load config from a .env file:
 load_dotenv()
-MONGODB_URI = os.environ['MONGODB_URI']
 GA_DATA_FILE = os.environ['GA_DATA_FILE']
-DB = os.environ['DB']
-PAGES_BY_ID = os.environ['PAGES_BY_ID']
 
 with open(GA_DATA_FILE + '.tsv', 'r',  encoding='iso-8859-1') as myfile:
   with open(GA_DATA_FILE + '.csv', 'w', encoding='iso-8859-1') as csv_file:
