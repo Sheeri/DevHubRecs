@@ -25,6 +25,7 @@ this_dict = defaultdict(list)
 with open(GA_DATA_FILE, 'r+') as f:
   read_me = csv.reader(f, delimiter=",")
   for row in read_me:
+    print(row)
     if row[0] not in this_dict[row[1]]:
       this_dict[row[1]].append(row[0])
 

@@ -3,6 +3,9 @@
 
 Pre-work: save a TSV file downloaded from GA query explorer demo/tools
              https://ga-dev-tools.appspot.com/query-explorer/
+          set the following variables:
+          metrics - ga:uniquePageviews
+          dimensions - ga:pagePath and whatever the dimension for your custom user ID is
           Copy env.tmpl to .env and put in your values
 
 parseTsvToCsv.py - step 1, cleans/prepares data. input:tsv file, output: csv file with the same name
